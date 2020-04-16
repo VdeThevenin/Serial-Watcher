@@ -16,6 +16,14 @@ public class Connection {
 	private String serial1Name = "";
 	private String serial2Name = "";
 
+	private InputStream in1;
+	private OutputStream out1;
+	
+	private InputStream in2;
+	private OutputStream out2;
+	
+	private OutputStream outw;
+	
 	private Connection() {
 
 	}
@@ -58,20 +66,19 @@ public class Connection {
 			SerialPort serialPort1 = (SerialPort) commPort1;
 			serialPort1.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 					SerialPort.PARITY_NONE);
-			InputStream in1 = serialPort1.getInputStream();
-			OutputStream out1 = serialPort1.getOutputStream();
+			in1 = serialPort1.getInputStream();
+			out1 = serialPort1.getOutputStream();
 
 			SerialPort serialPort2 = (SerialPort) commPort2;
 			serialPort2.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 					SerialPort.PARITY_NONE);
-			InputStream in2 = serialPort2.getInputStream();
-			OutputStream out2 = serialPort2.getOutputStream();
+			in2 = serialPort2.getInputStream();
+			out2 = serialPort2.getOutputStream();
 
 			SerialPort serialWatcher = (SerialPort) commWatcher;
 			serialWatcher.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 					SerialPort.PARITY_NONE);
-			// InputStream inw = serialWatcher.getInputStream();
-			OutputStream outw = serialWatcher.getOutputStream();
+			outw = serialWatcher.getOutputStream();
 
 			setSerial1Name(serialPort1.getName());
 			setSerial2Name(serialPort2.getName());
@@ -82,6 +89,14 @@ public class Connection {
 		}
 	}
 
+	public void disconnectAll() throws IOException{
+		in1.close();
+		in2.close();
+		out1.close();
+		out2.close();
+		outw.close();
+	}
+	
 	public static class SerialReader implements Runnable {
 		InputStream in;
 		OutputStream outOtherPort;
